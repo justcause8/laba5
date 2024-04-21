@@ -58,10 +58,11 @@ namespace laba5.Objects
 
         public virtual void Overlap(BaseObject obj)
         {
-            if(this.OnOverlap != null)
+            if (this.OnOverlap != null)
             {
                 this.OnOverlap(this, obj);
             }
         }
+
     }
 }

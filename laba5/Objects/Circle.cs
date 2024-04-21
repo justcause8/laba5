@@ -28,5 +28,27 @@ namespace laba5.Objects
             path.AddEllipse(-20, -20, 40, 40);
             return path;
         }
+
+        public override void Overlap(BaseObject obj)
+        {
+            base.Overlap(obj);
+
+            if (obj is Player)
+            {
+                // Скрываем объект
+                IsVisible = false;
+
+                // Появляемся на новом месте внутри окна
+                Random rand = new Random();
+                X = rand.Next(20, 300 - 30);  // Ширина экрана минус размер объекта
+                Y = rand.Next(20, 300 - 30);  // Высота экрана минус размер объекта
+
+                // Возвращаем объект в исходное состояние через небольшую задержку
+                Task.Delay(1000).ContinueWith(t =>
+                {
+                    IsVisible = true;
+                });
+            }
+        }
     }
 }
