@@ -18,6 +18,8 @@ namespace laba5.Objects
 
         public Action<BaseObject, BaseObject> OnOverlap;
 
+        public BaseObject() { }
+
         public BaseObject(float x, float y, float angle)
         {
             X = x;
