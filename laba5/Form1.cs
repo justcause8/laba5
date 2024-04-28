@@ -1,54 +1,60 @@
 using laba5.Objects;
+using System;
 using System.Windows.Forms;
 
 namespace laba5
 {
     public partial class Form1 : Form
     {
+        // Список объектов на экране
         List<BaseObject> objects = new();
         Player player;
         Marker marker;
         int counter = 0;
 
+        // Конструктор формы
         public Form1()
         {
             InitializeComponent();
-            UpdateScoreText();
+            UpdateScoreText(); // Обновление отображения счета
 
-            player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
+            player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);// Инициализация игрока
 
-            // добавляю реакцию на пересечение
+            // Добавление реакции на пересечение игрока с объектом
             player.OnOverlap += (p, obj) =>
             {
                 txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
             };
 
-            // добавил реакцию на пересечение с маркером
+            // Добавление реакции на пересечение игрока с маркером
             player.OnMarkerOverlap += (m) =>
             {
-                objects.Remove(m);
-                marker = null;
+                objects.Remove(m); // Удаление маркера из списка объектов
+                marker = null; // Установка маркера в null
             };
 
-            marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0);
+            marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0); // Инициализация маркера
 
+            // Добавление маркера и игрока в список объектов
             objects.Add(marker);
             objects.Add(player);
 
+            // Добавление кружков на экран
             objects.Add(new Circle(200, 200, 0));
             objects.Add(new Circle(100, 250, 0));
 
+            // Добавление красного круга на экран
             objects.Add(new RedCircle(150, 150, 0));
         }
 
-
+        // Метод для отрисовки на главном холсте
         private void pbMain_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
 
             g.Clear(Color.White);
 
-            // Обновляем размер красного круга
+            // Обновление размера красного круга
             foreach (var obj in objects)
             {
                 if (obj is RedCircle redCircle)
@@ -57,20 +63,20 @@ namespace laba5
                 }
             }
 
-            updatePlayer();
+            updatePlayer(); // Обновление положения игрока
 
-            // пересчитываем пересечения и уменьшаем размер круга
+            // Пересчитываем пересечения и уменьшаем размер кругов
             foreach (var obj in objects.ToList())
             {
                 if (obj is Circle circle)
                 {
                     if (!circle.WasDecreased())
                     {
-                        circle.DecreaseSize(0.2f); // Уменьшаем размер на 0.5 единиц при каждом обновлении
+                        circle.DecreaseSize(0.2f); // Уменьшение размера круга
                     }
                     else
                     {
-                        circle.ResetWasDecreased(); // Сбрасываем флаг уменьшения
+                        circle.ResetWasDecreased(); // Сброс флага уменьшения
                     }
                 }
 
@@ -81,22 +87,22 @@ namespace laba5
 
                     if (obj is Circle)
                     {
-                        counter++;
-                        UpdateScoreText();
+                        counter++; // Увеличение счетчика очков
+                        UpdateScoreText(); // Обновление отображения счета
                     }
                     else if (obj is RedCircle)
                     {
                         if (counter > 0)
                         {
-                            counter--;
-                            UpdateScoreText();
+                            counter--; // Уменьшение счетчика очков
+                            UpdateScoreText(); // Обновление отображения счета
                         }
-                        ((RedCircle)obj).Reset();
+                        ((RedCircle)obj).Reset(); // Сброс красного круга
                     }
                 }
             }
 
-            // рендерим объекты
+            // Рендеринг объектов
             foreach (var obj in objects)
             {
                 g.Transform = obj.GetTransform();
@@ -104,7 +110,7 @@ namespace laba5
             }
         }
 
-
+        // Метод для обновления положения игрока
         private void updatePlayer()
         {
             if (marker != null)
@@ -119,7 +125,6 @@ namespace laba5
                 player.vY += dy * 0.7f;
 
                 player.Angle = 90 - MathF.Atan2(player.vX, player.vY) * 180 / MathF.PI;
-
             }
 
             player.vX += -player.vX * 0.1f;
@@ -129,28 +134,30 @@ namespace laba5
             player.Y += player.vY;
         }
 
+        // Метод для обработки события таймера
         private void timer1_Tick(object sender, EventArgs e)
         {
-            pbMain.Invalidate();
+            pbMain.Invalidate(); // Перерисовка главного холста
         }
 
+        // Метод для обработки события клика мыши на главном холсте
         private void pbMain_MouseClick(object sender, MouseEventArgs e)
         {
             if (marker == null)
             {
                 marker = new Marker(0, 0, 0);
-                objects.Add(marker);
+                objects.Add(marker); // Добавление маркера в список объектов
             }
 
-            // а это так и остается
             marker.X = e.X;
             marker.Y = e.Y;
         }
 
+        // Метод для обновления отображения счета
         private void UpdateScoreText()
         {
-            txtCount.Clear(); // очистка содержимого txtCount
-            txtCount.AppendText($"Счет: {counter}\n"); // добавление текста с количеством очков
+            txtCount.Clear(); // Очистка содержимого счетчика
+            txtCount.AppendText($"Счет: {counter}\n"); // Добавление текста с текущим счетом
         }
     }
 }
