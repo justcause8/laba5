@@ -15,6 +15,9 @@ namespace laba5.Objects
         public float X;
         public float Y;
         public float Angle;
+        public float R;
+
+        public float timer = 60;
 
         public Action<BaseObject, BaseObject> OnOverlap;
 
