@@ -1,5 +1,7 @@
 using laba5.Objects;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace laba5
@@ -7,7 +9,7 @@ namespace laba5
     public partial class Form1 : Form
     {
         // Список объектов на экране
-        List<BaseObject> objects = new();
+        List<BaseObject> objects = new List<BaseObject>();
         Player player;
         Marker marker;
         int counter = 0;
@@ -39,20 +41,25 @@ namespace laba5
             objects.Add(marker);
             objects.Add(player);
 
-            // Добавление кружков на экран
-            objects.Add(new Circle(200, 200, 0));
-            objects.Add(new Circle(100, 250, 0));
+            // Добавление кругов на экран
+            objects.Add(new Circle(200, 200, 0) { leftTime = maxTime });
+            objects.Add(new Circle(100, 250, 0) { leftTime = maxTime });
+            objects.Add(new Circle(300, 250, 0) { leftTime = maxTime });
+
 
             // Добавление красного круга на экран
             objects.Add(new RedCircle(150, 150, 0));
         }
+
+        // Отсчет времени
+        private const int maxTime = 450;
 
         // Метод для отрисовки на главном холсте
         private void pbMain_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
 
-            g.Clear(Color.White);
+            g.Clear(Color.White); // Очистка холста
 
             // Обновление размера красного круга
             foreach (var obj in objects)
@@ -65,14 +72,15 @@ namespace laba5
 
             updatePlayer(); // Обновление положения игрока
 
-            // Пересчитываем пересечения и уменьшаем размер кругов
+            // Пересчитываем пересечения и уменьшаем оставшееся время у кругов
             foreach (var obj in objects.ToList())
             {
                 if (obj is Circle circle)
                 {
+                    circle.Tick(); // Обновление времени для круга
                     if (!circle.WasDecreased())
                     {
-                        circle.DecreaseSize(0.2f); // Уменьшение размера круга
+                        circle.leftTime -= 1; // Уменьшаем оставшееся время у круга
                     }
                     else
                     {
@@ -121,8 +129,8 @@ namespace laba5
                 dx /= length;
                 dy /= length;
 
-                player.vX += dx * 0.7f;
-                player.vY += dy * 0.7f;
+                player.vX += dx * 0.8f;
+                player.vY += dy * 0.8f;
 
                 player.Angle = 90 - MathF.Atan2(player.vX, player.vY) * 180 / MathF.PI;
             }

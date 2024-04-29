@@ -86,7 +86,5 @@ namespace laba5.Objects
                 this.OnOverlap(this, obj);
             }
         }
-
-
     }
 }

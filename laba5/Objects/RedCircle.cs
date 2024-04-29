@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace laba5.Objects
 {
@@ -39,7 +37,9 @@ namespace laba5.Objects
         // Метод отрисовывает круг
         public override void Render(Graphics g)
         {
-            g.FillEllipse(new SolidBrush(Color.Red), -CurrentR, -CurrentR, CurrentR * 2, CurrentR * 2);
+            // Устанавливаем прозрачность цвета
+            Color redColor = Color.FromArgb(128, Color.Red); // Установка альфа-канала на половину (128)
+            g.FillEllipse(new SolidBrush(redColor), -CurrentR, -CurrentR, CurrentR * 2, CurrentR * 2);
         }
 
         // Метод возвращает графический путь для объекта круга

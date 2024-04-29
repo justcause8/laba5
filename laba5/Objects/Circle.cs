@@ -1,34 +1,40 @@
-﻿using laba5.Objects;
-using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using System.Drawing.Drawing2D;
 
 namespace laba5.Objects
 {
-    // Класс, представляющий круговой объект
+    // Класс, представляющий кружок
     class Circle : BaseObject
     {
         private bool wasDecreased = false; // Флаг, указывающий, был ли круг уменьшен
-        public float Size { get; private set; } // Размер круга
+        public int leftTime; // Переменная для отслеживания времени
+        public const int maxTime = 300; // Максимальное время
 
 
         public Circle(float x, float y, float angle) : base(x, y, angle)
         {
-            Size = 40;
         }
 
         // Метод для отрисовки круга
         public override void Render(Graphics g)
         {
-            g.FillEllipse(new SolidBrush(Color.Green), -Size / 2, -Size / 2, Size, Size);
-            g.DrawEllipse(new Pen(Color.Green, 2), -Size / 2, -Size / 2, Size, Size);
+            // Вычисляем текущий размер круга
+            float size = 50 * ((float)leftTime / maxTime);
+
+            // Отрисовываем круг
+            g.FillEllipse(new SolidBrush(Color.Green), -size / 2, -size / 2, size, size);
+            g.DrawEllipse(new Pen(Color.Green, 2), -size / 2, -size / 2, size, size);
+
+            // Отображаем оставшееся время
+            g.DrawString($"{leftTime} с", new Font("Arial", 7), new SolidBrush(Color.Black), 25, 15);
         }
+
 
         // Метод для получения графического пути круга
         public override GraphicsPath GetGraphicsPath()
         {
             var path = base.GetGraphicsPath();
-            path.AddEllipse(-Size / 2, -Size / 2, Size, Size);
+            float circleSize = 20 * ((float)leftTime / maxTime); // Вычисляем текущий размер круга
+            path.AddEllipse(new RectangleF(-circleSize / 2, -circleSize / 2, circleSize, circleSize));
             return path;
         }
 
@@ -41,29 +47,31 @@ namespace laba5.Objects
             {
                 // Генерация случайных координат для нового местоположения круга
                 Random rand = new Random();
-                X = rand.Next(20, 300 - 30);
-                Y = rand.Next(0, 300 - 30);
+                X = rand.Next(20, 300);
+                Y = rand.Next(0, 300);
+                ResetTimer();
+            }
+        }
+        // Инициализация экземпляра Random в конструкторе класса
+        private Random rnd = new Random();
 
-                // Установка размера круга больше на 10
-                Size = 50;
+        // Отсчет времени
+        public void Tick()
+        {
+            leftTime--;
+            if (leftTime <= 0)
+            {
+                // Перерождение кругов
+                X = rnd.Next(0, 700);
+                Y = rnd.Next(100, 350);
+                ResetTimer(); // Перезапуск таймера
             }
         }
 
-        // Метод для уменьшения размера круга на заданную величину
-        public void DecreaseSize(float amount)
+        //Рестарт времени
+        private void ResetTimer()
         {
-            Size -= amount;
-            if (Size <= 0)
-            {
-                // Генерация случайных координат для нового местоположения круга
-                Random rand = new Random();
-                X = rand.Next(20, 300 - 30);
-                Y = rand.Next(0, 300 - 30);
-
-                // Возвращение начального размера
-                Size = 30;
-                wasDecreased = false;
-            }
+            leftTime = maxTime;
         }
 
         // Метод для проверки был ли круг уменьшен
