@@ -8,7 +8,7 @@ namespace laba5.Objects
         private bool wasDecreased = false; // Флаг, указывающий, был ли круг уменьшен
         public int leftTime; // Переменная для отслеживания времени
         public const int maxTime = 300; // Максимальное время
-
+        private Random rnd = new Random();
 
         public Circle(float x, float y, float angle) : base(x, y, angle)
         {
@@ -17,15 +17,15 @@ namespace laba5.Objects
         // Метод для отрисовки круга
         public override void Render(Graphics g)
         {
-            // Вычисляем текущий размер круга
-            float size = 50 * ((float)leftTime / maxTime);
+            
+            float size = 50 * ((float)leftTime / maxTime);// Вычисляем текущий размер круга
 
             // Отрисовываем круг
             g.FillEllipse(new SolidBrush(Color.Green), -size / 2, -size / 2, size, size);
             g.DrawEllipse(new Pen(Color.Green, 2), -size / 2, -size / 2, size, size);
 
             // Отображаем оставшееся время
-            g.DrawString($"{leftTime} с", new Font("Arial", 7), new SolidBrush(Color.Black), 25, 15);
+            g.DrawString($"{leftTime}", new Font("Arial", 7), new SolidBrush(Color.Black), 25, 15);
         }
 
 
@@ -52,8 +52,6 @@ namespace laba5.Objects
                 ResetTimer();
             }
         }
-        // Инициализация экземпляра Random в конструкторе класса
-        private Random rnd = new Random();
 
         // Отсчет времени
         public void Tick()

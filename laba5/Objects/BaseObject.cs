@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -13,16 +12,11 @@ namespace laba5.Objects
     // Базовый класс для всех объектов в игре
     class BaseObject
     {
-        // Поля объекта: координаты, угол поворота и радиус
         public float X;
         public float Y;
         public float Angle;
-        public float R;
 
-        // Таймер объекта
-        public float timer = 60;
-
-        // Событие, срабатывающее при пересечении с другим объектом
+        // Пересечение с другим объектом(делегат)
         public Action<BaseObject, BaseObject> OnOverlap;
 
         // Конструктор по умолчанию

@@ -8,11 +8,11 @@ namespace laba5
 {
     public partial class Form1 : Form
     {
-        // Список объектов на экране
-        List<BaseObject> objects = new List<BaseObject>();
+        List<BaseObject> objects = new List<BaseObject>();// Список объектов на экране
         Player player;
         Marker marker;
         int counter = 0;
+        private const int maxTime = 300; // Отсчет времени до исчезновения кружка
 
         // Конструктор формы
         public Form1()
@@ -20,7 +20,8 @@ namespace laba5
             InitializeComponent();
             UpdateScoreText(); // Обновление отображения счета
 
-            player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);// Инициализация игрока
+            // Инициализация игрока
+            player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
 
             // Добавление реакции на пересечение игрока с объектом
             player.OnOverlap += (p, obj) =>
@@ -35,7 +36,8 @@ namespace laba5
                 marker = null; // Установка маркера в null
             };
 
-            marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0); // Инициализация маркера
+            // Инициализация маркера
+            marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0);
 
             // Добавление маркера и игрока в список объектов
             objects.Add(marker);
@@ -46,18 +48,14 @@ namespace laba5
             objects.Add(new Circle(100, 250, 0) { leftTime = maxTime });
             objects.Add(new Circle(300, 250, 0) { leftTime = maxTime });
 
-
             // Добавление красного круга на экран
             objects.Add(new RedCircle(150, 150, 0));
         }
 
-        // Отсчет времени
-        private const int maxTime = 450;
-
-        // Метод для отрисовки на главном холсте
+        // Метод для отрисовки объектов на главном холсте
         private void pbMain_Paint(object sender, PaintEventArgs e)
         {
-            var g = e.Graphics;
+            var g = e.Graphics; //объект для рисования на холсте
 
             g.Clear(Color.White); // Очистка холста
 
@@ -81,10 +79,6 @@ namespace laba5
                     if (!circle.WasDecreased())
                     {
                         circle.leftTime -= 1; // Уменьшаем оставшееся время у круга
-                    }
-                    else
-                    {
-                        circle.ResetWasDecreased(); // Сброс флага уменьшения
                     }
                 }
 
@@ -123,9 +117,9 @@ namespace laba5
         {
             if (marker != null)
             {
-                float dx = marker.X - player.X;
+                float dx = marker.X - player.X; //направление игрока до маркера
                 float dy = marker.Y - player.Y;
-                float length = MathF.Sqrt(dx * dx + dy * dy);
+                float length = MathF.Sqrt(dx * dx + dy * dy); //вычисляем длину пути
                 dx /= length;
                 dy /= length;
 
@@ -135,10 +129,10 @@ namespace laba5
                 player.Angle = 90 - MathF.Atan2(player.vX, player.vY) * 180 / MathF.PI;
             }
 
-            player.vX += -player.vX * 0.1f;
+            player.vX += -player.vX * 0.1f; // затухание скорости
             player.vY += -player.vY * 0.1f;
 
-            player.X += player.vX;
+            player.X += player.vX; //обновляем координаты игрока
             player.Y += player.vY;
         }
 
